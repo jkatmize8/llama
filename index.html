@@ -32,6 +32,12 @@
 
       <section class="control-group">
         <h2>Style</h2>
+        <label for="styleset">Template set</label>
+        <select id="styleset">
+          <option value="text" selected>Text graphics — no photo needed</option>
+          <option value="photo">Photo layouts — built around an image</option>
+        </select>
+
         <label for="palette">Color palette</label>
         <select id="palette"></select>
 
@@ -49,7 +55,7 @@
           <option value="4" selected>4 assets</option>
         </select>
 
-        <label for="photo">Background photo (optional, used by the Photo template)</label>
+        <label for="photo">Photo (used by the photo templates; a pattern fills in if empty)</label>
         <input id="photo" type="file" accept="image/*" />
       </section>
 

@@ -12,6 +12,7 @@ const els = {
   subtitle: document.getElementById("subtitle"),
   brand: document.getElementById("brand"),
   cta: document.getElementById("cta"),
+  styleset: document.getElementById("styleset"),
   palette: document.getElementById("palette"),
   size: document.getElementById("size"),
   count: document.getElementById("count"),
@@ -78,7 +79,8 @@ function generate() {
   generated = [];
   const slug = slugify(title);
 
-  TEMPLATES.slice(0, count).forEach((template, i) => {
+  const templates = els.styleset.value === "photo" ? PHOTO_TEMPLATES : TEMPLATES;
+  templates.slice(0, count).forEach((template, i) => {
     const canvas = document.createElement("canvas");
     canvas.width = size.w;
     canvas.height = size.h;

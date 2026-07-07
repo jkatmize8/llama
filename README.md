@@ -15,11 +15,17 @@ python3 -m http.server 8000
 
 ## Features
 
-- **2–4 assets per batch**, each with a distinct design template:
-  1. **Bold Blocks** — solid background, big stacked headline, accent bar, CTA pill
-  2. **Gradient Glow** — gradient background with floating shapes, centered layout
-  3. **Minimal Frame** — light background, double border frame, serif typography
-  4. **Photo Overlay** — your uploaded photo (or a pattern fallback) with a dark scrim
+- **2–4 assets per batch**, from one of two template sets:
+  - **Text graphics** (no photo needed):
+    1. **Bold Blocks** — solid background, big stacked headline, accent bar, CTA pill
+    2. **Gradient Glow** — gradient background with floating shapes, centered layout
+    3. **Minimal Frame** — light background, double border frame, serif typography
+    4. **Photo Overlay** — full-bleed photo with a dark scrim for legible text
+  - **Photo layouts** (built around your uploaded image; a pattern fills in if empty):
+    1. **Photo Top Panel** — photo on top, text panel below with a brand chip
+    2. **Photo Overlay** — full-bleed photo with a dark scrim
+    3. **Photo Circle** — circular photo inset with an accent ring, centered text
+    4. **Photo Split** — text panel above, photo below, CTA pill on the photo
 - **Pinterest-correct dimensions**: Standard Pin 1000×1500 (2:3), Square 1000×1000,
   Idea/Story Pin 1080×1920 (9:16)
 - **6 color palettes** applied consistently across every template
