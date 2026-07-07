@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pin Studio — Pinterest Image Asset Generator</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📌</text></svg>" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">📌 Pin Studio</div>
+    <p class="tagline">Generate 2–4 ready-to-post Pinterest image assets from one idea</p>
+  </header>
+
+  <main class="layout">
+    <aside class="controls">
+      <section class="control-group">
+        <h2>Content</h2>
+        <label for="title">Pin title</label>
+        <textarea id="title" rows="2" maxlength="80" placeholder="10 Easy Meal Prep Ideas">10 Easy Meal Prep Ideas for Busy Weeknights</textarea>
+
+        <label for="subtitle">Subtitle / hook</label>
+        <input id="subtitle" type="text" maxlength="90" value="Save hours every week with these simple recipes" placeholder="A short supporting line" />
+
+        <label for="brand">Brand / website</label>
+        <input id="brand" type="text" maxlength="40" value="yourblog.com" placeholder="yourblog.com" />
+
+        <label for="cta">Call to action (optional)</label>
+        <input id="cta" type="text" maxlength="30" value="Read More" placeholder="Read More" />
+      </section>
+
+      <section class="control-group">
+        <h2>Style</h2>
+        <label for="palette">Color palette</label>
+        <select id="palette"></select>
+
+        <label for="size">Pin size</label>
+        <select id="size">
+          <option value="standard" selected>Standard Pin — 1000 × 1500 (2:3)</option>
+          <option value="square">Square Pin — 1000 × 1000 (1:1)</option>
+          <option value="tall">Idea / Story Pin — 1080 × 1920 (9:16)</option>
+        </select>
+
+        <label for="count">Number of assets</label>
+        <select id="count">
+          <option value="2">2 assets</option>
+          <option value="3">3 assets</option>
+          <option value="4" selected>4 assets</option>
+        </select>
+
+        <label for="photo">Background photo (optional, used by the Photo template)</label>
+        <input id="photo" type="file" accept="image/*" />
+      </section>
+
+      <button id="generate" class="btn primary">Generate assets</button>
+      <button id="download-all" class="btn secondary" disabled>Download all</button>
+    </aside>
+
+    <section class="gallery-wrap">
+      <div id="gallery" class="gallery">
+        <p class="empty-hint">Fill in your content and click <strong>Generate assets</strong>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    All rendering happens in your browser — nothing is uploaded anywhere.
+  </footer>
+
+  <script src="js/templates.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
