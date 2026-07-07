@@ -54,7 +54,23 @@ function slugify(text) {
   return String(text).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40) || "pin";
 }
 
-function generate() {
+/* Canvas text does not trigger web-font loading on its own, so request the
+ * brand faces explicitly before drawing; fallbacks render if offline. */
+let fontsReady = null;
+function ensureFonts() {
+  if (!fontsReady) {
+    fontsReady = Promise.all([
+      document.fonts.load('700 100px "Playfair Display"'),
+      document.fonts.load('400 40px "DM Sans"'),
+      document.fonts.load('500 40px "DM Sans"'),
+      document.fonts.load('600 40px "DM Sans"'),
+    ]).catch(() => {});
+  }
+  return fontsReady;
+}
+
+async function generate() {
+  await ensureFonts();
   const title = els.title.value.trim();
   if (!title) {
     alert("Please enter a pin title.");

@@ -8,18 +8,20 @@
  * photo:   HTMLImageElement or null
  */
 
+/*
+ * BeachesA1A style guide tokens (STYLE_GUIDE.md is the source of truth).
+ * Every palette is built exclusively from the brand colors: Ocean Deep,
+ * Coastal Blue, Sky Water, Warm Sand, Driftwood, Deep Charcoal, Sea Mist.
+ * `sub` is the secondary text color (Sea Mist) where the background allows it.
+ */
 const PALETTES = [
-  // Beaches A1A brand — logo blues from the A1A style guide (PMS 2391 / PMS 305),
-  // cream and deep-slate pulled from the BeachesA1A design system PDF
-  { name: "Beaches A1A — Ocean", bg: "#28A1C6", bg2: "#52D1EF", text: "#ffffff", accent: "#FAF3E7", accentText: "#1B7FA3" },
-  { name: "Beaches A1A — Sand",  bg: "#FDFAF4", bg2: "#D9F0F8", text: "#1D4E5E", accent: "#28A1C6", accentText: "#ffffff" },
-  { name: "Berry Pop",     bg: "#7a1131", bg2: "#b91d47", text: "#ffffff", accent: "#ffc857", accentText: "#3a0f1e" },
-  { name: "Fresh Sage",    bg: "#e9efe6", bg2: "#cfe0c3", text: "#2f3e2e", accent: "#4a7c59", accentText: "#ffffff" },
-  { name: "Midnight Gold", bg: "#101828", bg2: "#1d2a44", text: "#f5f1e8", accent: "#d4a548", accentText: "#101828" },
-  { name: "Peach Cream",   bg: "#fff1e6", bg2: "#ffd9c0", text: "#5b3a29", accent: "#e07a5f", accentText: "#ffffff" },
-  { name: "Ocean Air",     bg: "#eaf4f4", bg2: "#bfe0e2", text: "#1d3557", accent: "#457b9d", accentText: "#ffffff" },
-  { name: "Bold Coral",    bg: "#ff5a5f", bg2: "#ff7e6b", text: "#ffffff", accent: "#2b2d42", accentText: "#ffffff" },
+  { name: "Ocean Deep",   bg: "#2B8FAB", bg2: "#6DD4EC", text: "#FFFFFF", accent: "#F7F3EE", accentText: "#2B8FAB" },
+  { name: "Warm Sand",    bg: "#F7F3EE", bg2: "#EDE6DC", text: "#1E1E1E", sub: "#6B8A96", accent: "#2B8FAB", accentText: "#FFFFFF" },
+  { name: "White Card",   bg: "#FFFFFF", bg2: "#F7F3EE", text: "#1E1E1E", sub: "#6B8A96", accent: "#2B8FAB", accentText: "#FFFFFF" },
+  { name: "Coastal Blue", bg: "#3AAECC", bg2: "#6DD4EC", text: "#FFFFFF", accent: "#F7F3EE", accentText: "#2B8FAB" },
 ];
+
+const DRIFTWOOD = "#EDE6DC";
 
 /* ---------- text helpers ---------- */
 
@@ -61,7 +63,7 @@ function drawLines(ctx, lines, x, startY, size, lineHeight) {
 }
 
 function drawPill(ctx, text, cx, cy, fontSize, fill, textFill) {
-  ctx.font = `700 ${fontSize}px ${SANS}`;
+  ctx.font = `600 ${fontSize}px ${SANS}`;
   const padX = fontSize * 1.2;
   const w = ctx.measureText(text).width + padX * 2;
   const h = fontSize * 2.1;
@@ -97,35 +99,43 @@ function drawCover(ctx, img, x, y, w, h) {
   ctx.restore();
 }
 
-/* Fill a rect with the photo, or a diagonal-stripe pattern when there is none. */
+/* Fill a rect with the photo. With no photo, the style guide says placeholders
+ * read as neutral Driftwood tiles (no patterns, no textures) — a 10%-opacity
+ * wash of the signature gradient is the only decoration allowed. */
 function drawPhotoOrPattern(ctx, spec, x, y, w, h) {
   if (spec.photo) {
     drawCover(ctx, spec.photo, x, y, w, h);
     return;
   }
-  const p = spec.palette;
   ctx.save();
-  ctx.beginPath();
-  ctx.rect(x, y, w, h);
-  ctx.clip();
-  ctx.fillStyle = p.bg2;
+  ctx.fillStyle = DRIFTWOOD;
   ctx.fillRect(x, y, w, h);
-  ctx.strokeStyle = p.bg;
-  ctx.lineWidth = w * 0.02;
-  ctx.globalAlpha = 0.5;
-  for (let sx = x - h; sx < x + w + h; sx += w * 0.12) {
-    ctx.beginPath();
-    ctx.moveTo(sx, y);
-    ctx.lineTo(sx + h * 0.5, y + h);
-    ctx.stroke();
-  }
-  ctx.globalAlpha = 1;
+  const wash = ctx.createLinearGradient(x, y, x + w * 0.35, y + h);
+  wash.addColorStop(0, "#2B8FAB");
+  wash.addColorStop(1, "#6DD4EC");
+  ctx.globalAlpha = 0.1;
+  ctx.fillStyle = wash;
+  ctx.fillRect(x, y, w, h);
   ctx.restore();
 }
 
-// Body copy follows the A1A style guide: Gotham first, Helvetica as fallback
-const SANS = 'Gotham, "Helvetica Neue", Helvetica, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
-const SERIF = 'Georgia, "Times New Roman", serif';
+// Style guide type pairing: Playfair Display carries every heading,
+// DM Sans carries everything else. Dancing Script is tagline-only (unused
+// here because the tagline is locked to the logo lockup files).
+const SANS = '"DM Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif';
+const SERIF = '"Playfair Display", "Times New Roman", serif';
+
+/* Eyebrow label per the style guide: DM Sans 500, uppercase, 0.22em tracking. */
+function drawEyebrow(ctx, text, x, y, size, color, align = "left") {
+  ctx.save();
+  ctx.font = `500 ${size}px ${SANS}`;
+  try { ctx.letterSpacing = `${(size * 0.22).toFixed(2)}px`; } catch (e) { /* older browsers */ }
+  ctx.fillStyle = color;
+  ctx.textAlign = align;
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText(String(text).toUpperCase(), x, y);
+  ctx.restore();
+}
 
 /* ---------- templates ---------- */
 
@@ -148,11 +158,9 @@ function templateBoldBlocks(ctx, spec) {
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
 
-  // brand chip at top
+  // brand eyebrow at top
   if (spec.brand) {
-    ctx.font = `700 ${w * 0.032}px ${SANS}`;
-    ctx.fillStyle = p.accent;
-    ctx.fillText(spec.brand.toUpperCase(), pad, pad + w * 0.032);
+    drawEyebrow(ctx, spec.brand, pad, pad + w * 0.026, w * 0.026, p.accent);
   }
 
   // budget the vertical space so title/subtitle never collide with the CTA,
@@ -164,10 +172,10 @@ function templateBoldBlocks(ctx, spec) {
 
   // title
   const fit = fitText(ctx, spec.title, w - pad * 2, (contentBottom - titleTop) * 0.6, {
-    max: w * 0.115, min: w * 0.05, weight: 800, family: SANS, lineHeight: 1.12,
+    max: w * 0.115, min: w * 0.05, weight: 700, family: SERIF, lineHeight: 1.12,
   });
   ctx.fillStyle = p.text;
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   const afterTitle = drawLines(ctx, fit.lines, pad, titleTop + fit.size, fit.size, 1.12);
 
   // accent underline bar
@@ -180,8 +188,8 @@ function templateBoldBlocks(ctx, spec) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2, Math.max(contentBottom - subTop, h * 0.05), {
       max: w * 0.042, min: w * 0.028, weight: 400, family: SANS, lineHeight: 1.4,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.85;
     ctx.font = `400 ${sub.size}px ${SANS}`;
     drawLines(ctx, sub.lines, pad, subTop + sub.size, sub.size, 1.4);
     ctx.globalAlpha = 1;
@@ -197,9 +205,10 @@ function templateGradientGlow(ctx, spec) {
   const { w, h, palette: p } = spec;
   const pad = w * 0.1;
 
-  const grad = ctx.createLinearGradient(0, 0, w * 0.6, h);
-  grad.addColorStop(0, p.bg2);
-  grad.addColorStop(1, p.bg);
+  // signature gradient direction: deep at the top, light at the bottom (~160deg)
+  const grad = ctx.createLinearGradient(0, 0, w * 0.35, h);
+  grad.addColorStop(0, p.bg);
+  grad.addColorStop(1, p.bg2);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, w, h);
 
@@ -229,12 +238,12 @@ function templateGradientGlow(ctx, spec) {
 
   // centered title
   const fit = fitText(ctx, spec.title, w - pad * 2, h * 0.38, {
-    max: w * 0.105, min: w * 0.05, weight: 800, family: SANS, lineHeight: 1.15,
+    max: w * 0.105, min: w * 0.05, weight: 700, family: SERIF, lineHeight: 1.15,
   });
   const blockH = fit.lines.length * fit.size * 1.15;
   const titleY = h * 0.5 - blockH / 2 + fit.size * 0.8;
   ctx.fillStyle = p.text;
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   ctx.textAlign = "center";
   const afterTitle = drawLines(ctx, fit.lines, w / 2, titleY, fit.size, 1.15);
 
@@ -242,8 +251,8 @@ function templateGradientGlow(ctx, spec) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2.4, h * 0.12, {
       max: w * 0.038, min: w * 0.026, weight: 400, family: SANS, lineHeight: 1.4,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.85;
     ctx.font = `400 ${sub.size}px ${SANS}`;
     ctx.textAlign = "center";
     drawLines(ctx, sub.lines, w / 2, afterTitle + h * 0.04, sub.size, 1.4);
@@ -275,13 +284,9 @@ function templateMinimalFrame(ctx, spec) {
   ctx.textAlign = "center";
   ctx.textBaseline = "alphabetic";
 
-  // small brand at top
+  // small brand eyebrow at top
   if (spec.brand) {
-    ctx.font = `600 ${w * 0.026}px ${SANS}`;
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.7;
-    ctx.fillText(spec.brand.toUpperCase().split("").join(" "), w / 2, h * 0.14);
-    ctx.globalAlpha = 1;
+    drawEyebrow(ctx, spec.brand, w / 2, h * 0.14, w * 0.026, p.sub || p.text, "center");
   }
 
   // serif title, centered
@@ -306,11 +311,11 @@ function templateMinimalFrame(ctx, spec) {
 
   if (spec.subtitle) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2, h * 0.12, {
-      max: w * 0.034, min: w * 0.024, weight: 400, family: SERIF, lineHeight: 1.5,
+      max: w * 0.034, min: w * 0.024, weight: 400, family: SANS, lineHeight: 1.5,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.8;
-    ctx.font = `italic 400 ${sub.size}px ${SERIF}`;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.8;
+    ctx.font = `400 ${sub.size}px ${SANS}`;
     drawLines(ctx, sub.lines, w / 2, dy + h * 0.05, sub.size, 1.5);
     ctx.globalAlpha = 1;
   }
@@ -352,7 +357,7 @@ function templatePhotoOverlay(ctx, spec) {
 
   // title anchored to the bottom
   const fit = fitText(ctx, spec.title, w - pad * 2, h * 0.3, {
-    max: w * 0.1, min: w * 0.05, weight: 800, family: SANS, lineHeight: 1.12,
+    max: w * 0.1, min: w * 0.05, weight: 700, family: SERIF, lineHeight: 1.12,
   });
   const blockH = fit.lines.length * fit.size * 1.12;
 
@@ -370,7 +375,7 @@ function templatePhotoOverlay(ctx, spec) {
   }
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   const titleStart = bottomY - blockH + fit.size;
   const afterTitle = drawLines(ctx, fit.lines, pad, titleStart, fit.size, 1.12);
 
@@ -420,10 +425,10 @@ function templatePhotoTop(ctx, spec) {
   const contentBottom = spec.cta ? h - pad * 0.7 - pillH - h * 0.025 : h - pad * 0.7;
 
   const fit = fitText(ctx, spec.title, w - pad * 2, (contentBottom - titleTop) * 0.65, {
-    max: w * 0.082, min: w * 0.042, weight: 800, family: SANS, lineHeight: 1.14,
+    max: w * 0.082, min: w * 0.042, weight: 700, family: SERIF, lineHeight: 1.14,
   });
   ctx.fillStyle = p.text;
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   const afterTitle = drawLines(ctx, fit.lines, pad, titleTop + fit.size, fit.size, 1.14);
 
   if (spec.subtitle) {
@@ -431,8 +436,8 @@ function templatePhotoTop(ctx, spec) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2, Math.max(contentBottom - subTop, h * 0.04), {
       max: w * 0.036, min: w * 0.026, weight: 400, family: SANS, lineHeight: 1.4,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.85;
     ctx.font = `400 ${sub.size}px ${SANS}`;
     drawLines(ctx, sub.lines, pad, subTop + sub.size, sub.size, 1.4);
     ctx.globalAlpha = 1;
@@ -472,11 +477,7 @@ function templatePhotoCircle(ctx, spec) {
   ctx.textBaseline = "alphabetic";
 
   if (spec.brand) {
-    ctx.font = `600 ${w * 0.026}px ${SANS}`;
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.7;
-    ctx.fillText(spec.brand.toUpperCase(), w / 2, cy + r + h * 0.05);
-    ctx.globalAlpha = 1;
+    drawEyebrow(ctx, spec.brand, w / 2, cy + r + h * 0.05, w * 0.026, p.sub || p.text, "center");
   }
 
   const titleTop = cy + r + h * 0.075;
@@ -485,10 +486,10 @@ function templatePhotoCircle(ctx, spec) {
   const contentBottom = spec.cta ? h - pad - pillH - h * 0.03 : h - pad;
 
   const fit = fitText(ctx, spec.title, w - pad * 2, (contentBottom - titleTop) * 0.65, {
-    max: w * 0.088, min: w * 0.044, weight: 800, family: SANS, lineHeight: 1.15,
+    max: w * 0.088, min: w * 0.044, weight: 700, family: SERIF, lineHeight: 1.15,
   });
   ctx.fillStyle = p.text;
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   const afterTitle = drawLines(ctx, fit.lines, w / 2, titleTop + fit.size, fit.size, 1.15);
 
   if (spec.subtitle) {
@@ -496,8 +497,8 @@ function templatePhotoCircle(ctx, spec) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2.2, Math.max(contentBottom - subTop, h * 0.04), {
       max: w * 0.035, min: w * 0.025, weight: 400, family: SANS, lineHeight: 1.4,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.85;
     ctx.font = `400 ${sub.size}px ${SANS}`;
     drawLines(ctx, sub.lines, w / 2, subTop + sub.size, sub.size, 1.4);
     ctx.globalAlpha = 1;
@@ -527,19 +528,17 @@ function templatePhotoSplit(ctx, spec) {
   ctx.textBaseline = "alphabetic";
 
   if (spec.brand) {
-    ctx.font = `700 ${w * 0.028}px ${SANS}`;
-    ctx.fillStyle = p.accent;
-    ctx.fillText(spec.brand.toUpperCase(), pad, pad * 0.8 + w * 0.028);
+    drawEyebrow(ctx, spec.brand, pad, pad * 0.8 + w * 0.026, w * 0.026, p.accent);
   }
 
   const titleTop = pad * 0.8 + w * 0.06;
   const contentBottom = textH - h * 0.035;
 
   const fit = fitText(ctx, spec.title, w - pad * 2, (contentBottom - titleTop) * 0.68, {
-    max: w * 0.085, min: w * 0.042, weight: 800, family: SANS, lineHeight: 1.14,
+    max: w * 0.085, min: w * 0.042, weight: 700, family: SERIF, lineHeight: 1.14,
   });
   ctx.fillStyle = p.text;
-  ctx.font = `800 ${fit.size}px ${SANS}`;
+  ctx.font = `700 ${fit.size}px ${SERIF}`;
   const afterTitle = drawLines(ctx, fit.lines, pad, titleTop + fit.size, fit.size, 1.14);
 
   if (spec.subtitle) {
@@ -547,8 +546,8 @@ function templatePhotoSplit(ctx, spec) {
     const sub = fitText(ctx, spec.subtitle, w - pad * 2, Math.max(contentBottom - subTop, h * 0.035), {
       max: w * 0.034, min: w * 0.025, weight: 400, family: SANS, lineHeight: 1.35,
     });
-    ctx.fillStyle = p.text;
-    ctx.globalAlpha = 0.85;
+    ctx.fillStyle = p.sub || p.text;
+    ctx.globalAlpha = p.sub ? 1 : 0.85;
     ctx.font = `400 ${sub.size}px ${SANS}`;
     drawLines(ctx, sub.lines, pad, subTop + sub.size, sub.size, 1.35);
     ctx.globalAlpha = 1;
