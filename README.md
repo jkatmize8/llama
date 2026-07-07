@@ -28,7 +28,10 @@ python3 -m http.server 8000
     4. **Photo Split** — text panel above, photo below, CTA pill on the photo
 - **Pinterest-correct dimensions**: Standard Pin 1000×1500 (2:3), Square 1000×1000,
   Idea/Story Pin 1080×1920 (9:16)
-- **6 color palettes** applied consistently across every template
+- **8 color palettes** applied consistently across every template, led by the two
+  **Beaches A1A** brand palettes (Ocean and Sand) built from the A1A style guide
+  colors (#28A1C6 / #52D1EF), with body copy following the brand font stack
+  (Gotham → Helvetica)
 - Editable **title, subtitle, brand/website, and call-to-action**
 - Text auto-sizes and wraps to fit each layout
 - **Per-asset download** or **Download all** as PNG files with descriptive names

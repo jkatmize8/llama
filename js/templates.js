@@ -9,6 +9,10 @@
  */
 
 const PALETTES = [
+  // Beaches A1A brand — logo blues from the A1A style guide (PMS 2391 / PMS 305),
+  // cream and deep-slate pulled from the BeachesA1A design system PDF
+  { name: "Beaches A1A — Ocean", bg: "#28A1C6", bg2: "#52D1EF", text: "#ffffff", accent: "#FAF3E7", accentText: "#1B7FA3" },
+  { name: "Beaches A1A — Sand",  bg: "#FDFAF4", bg2: "#D9F0F8", text: "#1D4E5E", accent: "#28A1C6", accentText: "#ffffff" },
   { name: "Berry Pop",     bg: "#7a1131", bg2: "#b91d47", text: "#ffffff", accent: "#ffc857", accentText: "#3a0f1e" },
   { name: "Fresh Sage",    bg: "#e9efe6", bg2: "#cfe0c3", text: "#2f3e2e", accent: "#4a7c59", accentText: "#ffffff" },
   { name: "Midnight Gold", bg: "#101828", bg2: "#1d2a44", text: "#f5f1e8", accent: "#d4a548", accentText: "#101828" },
@@ -119,7 +123,8 @@ function drawPhotoOrPattern(ctx, spec, x, y, w, h) {
   ctx.restore();
 }
 
-const SANS = '-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+// Body copy follows the A1A style guide: Gotham first, Helvetica as fallback
+const SANS = 'Gotham, "Helvetica Neue", Helvetica, -apple-system, "Segoe UI", Roboto, Arial, sans-serif';
 const SERIF = 'Georgia, "Times New Roman", serif';
 
 /* ---------- templates ---------- */
@@ -385,7 +390,7 @@ function templatePhotoOverlay(ctx, spec) {
 function templatePhotoTop(ctx, spec) {
   const { w, h, palette: p } = spec;
   const pad = w * 0.09;
-  const photoH = h * 0.52;
+  const photoH = h * 0.6;
 
   ctx.fillStyle = p.bg;
   ctx.fillRect(0, 0, w, h);
@@ -449,7 +454,7 @@ function templatePhotoCircle(ctx, spec) {
   ctx.fillRect(0, 0, w, h);
 
   // circular photo with accent ring, sized so it always fits the aspect ratio
-  const r = Math.min(w * 0.3, h * 0.2);
+  const r = Math.min(w * 0.34, h * 0.22);
   const cx = w / 2;
   const cy = h * 0.06 + w * 0.012 + r;
   ctx.beginPath();
@@ -506,7 +511,7 @@ function templatePhotoCircle(ctx, spec) {
 function templatePhotoSplit(ctx, spec) {
   const { w, h, palette: p } = spec;
   const pad = w * 0.09;
-  const textH = h * 0.46;
+  const textH = h * 0.38;
 
   // text panel on top, photo below
   ctx.fillStyle = p.bg;
