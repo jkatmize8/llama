@@ -1,0 +1,234 @@
+/* BeachesA1A UI — tokens from STYLE_GUIDE.md */
+:root {
+  --beaches-deep: #2B8FAB;
+  --beaches-deep-hover: #256F87;
+  --beaches-mid: #3AAECC;
+  --beaches-light: #6DD4EC;
+  --black: #1E1E1E;
+  --sand: #F7F3EE;
+  --sand-dark: #EDE6DC;
+  --mist: #6B8A96;
+  --white: #FFFFFF;
+
+  --font-display: "Playfair Display", "Times New Roman", serif;
+  --font-body: "DM Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+
+  --shadow-md: 0 2px 12px rgba(30, 30, 30, .08);
+  --shadow-lg: 0 10px 30px rgba(30, 30, 30, .12);
+  --shadow-brand: 0 10px 30px rgba(43, 143, 171, .25);
+
+  --ease-coast: cubic-bezier(.22, .61, .36, 1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  background: var(--sand);
+  color: var(--black);
+}
+
+.app-header {
+  padding: 32px 32px 8px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--beaches-deep);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.tagline {
+  margin: 4px 0 0;
+  color: var(--mist);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  padding: 24px 32px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.controls {
+  background: var(--white);
+  border: 1px solid var(--sand-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  position: sticky;
+  top: 16px;
+}
+
+.control-group h2 {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--beaches-deep);
+  margin: 0 0 12px;
+}
+
+.control-group + .control-group {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--sand-dark);
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 12px 0 4px;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid var(--sand-dark);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--black);
+}
+
+textarea { resize: vertical; }
+
+input[type="file"] { font-size: 13px; }
+
+.btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background 240ms var(--ease-coast), box-shadow 240ms var(--ease-coast), transform 100ms var(--ease-coast);
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn.primary {
+  background: var(--beaches-deep);
+  color: var(--white);
+  box-shadow: var(--shadow-brand);
+}
+
+.btn.primary:hover { background: var(--beaches-deep-hover); }
+
+.btn.secondary {
+  background: var(--white);
+  border: 1px solid var(--sand-dark);
+  color: var(--black);
+  margin-top: 10px;
+}
+
+.btn.secondary:hover { border-color: var(--mist); }
+
+.btn.secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.empty-hint {
+  color: var(--mist);
+  grid-column: 1 / -1;
+  padding: 48px 0;
+  text-align: center;
+}
+
+.pin-card {
+  background: var(--white);
+  border: 1px solid var(--sand-dark);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 240ms var(--ease-coast), box-shadow 240ms var(--ease-coast);
+}
+
+.pin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Photos stay square-cornered; only the card around them rounds. */
+.pin-card canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.pin-card .meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.pin-card .name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pin-card .dims {
+  font-size: 12px;
+  color: var(--mist);
+}
+
+.pin-card .download {
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--beaches-deep);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 240ms var(--ease-coast);
+}
+
+.pin-card .download:hover { background: var(--beaches-deep-hover); }
+
+.app-footer {
+  padding: 16px 32px 32px;
+  font-size: 12px;
+  color: var(--mist);
+}
